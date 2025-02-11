@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "../App.css"
+import api from "../axiosConfig"; // Change this line
+
 
 const UploadForm = () => {
   const [file, setFile] = useState(null); // For file input
@@ -28,16 +29,12 @@ const UploadForm = () => {
 
     try {
       setLoading(true);
-      setResult(null); // Reset result state
-      const response = await axios.post(
-        "http://localhost:8080/api/diagnosis/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      setResult(null);
+      const response = await api.post("/diagnosis/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       setResult(response.data);
     } catch (error) {
       console.error("Error uploading the file", error);
@@ -50,9 +47,10 @@ const UploadForm = () => {
   return (
     <div className="container mt-4">
       <div className="row">
+
         {/* Left Side: Upload Form */}
-        <div className="col-md-6">
-          <div className="card p-4">
+        <div className="col-md-6 flex items-center justify-center h-full">
+          <div className="card1 p-4 w-full max-w-md">
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="fileUpload">Upload MRI Image</label>
@@ -92,14 +90,16 @@ const UploadForm = () => {
           </div>
         </div>
 
+
+
         {/* Right Side: Image Preview */}
-        <div className="col-md-6 d-flex align-items-center justify-content-center">
+        <div className="col-md-4 d-flex align-items-center justify-content-center" style={{ marginTop: "200px"}}>
           {imagePreview ? (
             <img
               src={imagePreview}
               alt="Uploaded Preview"
               className="img-thumbnail"
-              style={{ maxWidth: "100%", maxHeight: "300px" }}
+              style={{ maxWidth: "100%", maxHeight: "300px", border: "1px solid #ccc", padding: "20px"}}
             />
           ) : (
             <p className="text-muted">No image uploaded yet.</p>
